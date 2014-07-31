@@ -1,0 +1,12 @@
+---
+- hosts: etcd-seed
+  pre_tasks:
+    - apt: update_cache=yes cache_valid_time=3600
+  roles:
+    - retr0h.etcd
+
+- hosts: etcd
+  pre_tasks:
+    - apt: update_cache=yes cache_valid_time=3600
+  roles:
+    - {role: retr0h.etcd, etcd_cluster: True }
