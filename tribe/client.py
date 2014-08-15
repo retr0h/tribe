@@ -25,21 +25,31 @@ import etcd
 
 class Client(object):
     """
-    Tribe Client
-
-    /tribe/nodes/$hostname: time.time()
+    A client which handles interactions with etcd.
     """
 
     def __init__(self, ct=None):
-        # TODO(retr0h): Move this elsewhere
+        # TODO(retr0h): Move this elsewhere.
         if not ct:
             ct = (('192.168.20.13', 4001), ('192.168.20.14', 4001))
         self._client = etcd.Client(ct)
 
     def get_key(self, key, recursive=False, wait=False):
-        return self._client.read(key, recursive=recursive, wait=wait)
-        # return [subkey.key for subkey in result.children
-        #           if len(result._children) > 0]
+        """
+        Fetch the given `key`.  Returns a list of etcd.EtcdResult objects
+        when `recursive` is True, otherwise an etcd.EtcdResult object.
+
+        :param key: A string with the key to fetch.
+        :param recursive: A bool to recursively fetch a dir.
+        :param wait: A bool if to wait and return next time the `key` changes.
+        """
+        result = self._client.read(key, recursive=recursive, wait=wait)
+        if not result.dir:
+            return result
+        else:
+            # NOTE(retr0h): Not sure using _children is a good idea.
+            return [subkey for subkey in result.children
+                    if len(result._children) > 0]
 
     def add_key(self, key, value, ttl=None):
         return self._client.set(key, value, ttl=ttl)

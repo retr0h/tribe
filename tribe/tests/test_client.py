@@ -57,6 +57,31 @@ class TestClient(unittest.TestCase):
 
         self._client.delete_key(self._key)
 
+    def test_get_key_returns_list(self):
+        keys = ['/{0}/bar'.format(self._key),
+                '/{0}/baz'.format(self._key)]
+        for key in keys:
+            self._client.add_key(key, 'value')
+        time.sleep(self._sleep_time)
+
+        result = self._client.get_key(self._key, recursive=True)
+        self.assertEquals(2, len(result))
+        for index, key in enumerate(keys):
+            self.assertEquals('value', result[index].value)
+
+        for key in keys:
+            self._client.delete_key(key)
+
+    def test_get_key_returns_empty_list(self):
+        keys = ['/{0}/bar'.format(self._key),
+                '/{0}/baz'.format(self._key)]
+        for key in keys:
+            self._client.add_key(key, 'value', ttl=1)
+        time.sleep(2)  # keys should now be expired by the ttl
+
+        result = self._client.get_key(self._key, recursive=True)
+        self.assertEquals(0, len(result))
+
     def test_add_key(self):
         with patch('etcd.client.Client.set') as mocked:
             client.Client().add_key('mocked-key', 'mocked-value')
