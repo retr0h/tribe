@@ -27,6 +27,7 @@ import time
 
 import unittest2 as unittest
 from mock import patch
+from nose.plugins.attrib import attr
 
 from tribe import client
 
@@ -48,6 +49,7 @@ class TestClient(unittest.TestCase):
                                            recursive=False,
                                            wait=False)
 
+    @attr('integration')
     def test_get_key_returns(self):
         self._client.add_key(self._key, 'value')
         time.sleep(self._sleep_time)
@@ -57,6 +59,7 @@ class TestClient(unittest.TestCase):
 
         self._client.delete_key(self._key)
 
+    @attr('integration')
     def test_get_key_returns_list(self):
         keys = ['/{0}/bar'.format(self._key),
                 '/{0}/baz'.format(self._key)]
@@ -72,6 +75,7 @@ class TestClient(unittest.TestCase):
         for key in keys:
             self._client.delete_key(key)
 
+    @attr('integration')
     def test_get_key_returns_empty_list(self):
         keys = ['/{0}/bar'.format(self._key),
                 '/{0}/baz'.format(self._key)]
@@ -90,6 +94,7 @@ class TestClient(unittest.TestCase):
                                            'mocked-value',
                                            ttl=None)
 
+    @attr('integration')
     def test_add_key_returns(self):
         result = self._client.add_key(self._key, 'value')
         time.sleep(self._sleep_time)
@@ -106,6 +111,7 @@ class TestClient(unittest.TestCase):
                                            recursive=False,
                                            wait=True)
 
+    @attr('integration')
     def test_watch_key_returns(self):
         self._client.add_key(self._key, 'value')
         time.sleep(self._sleep_time)

@@ -10,6 +10,7 @@ Testing
 
     $ vagrant up --no-provision
     $ vagrant provision
+    $ tox
 
 License and Author
 ==================

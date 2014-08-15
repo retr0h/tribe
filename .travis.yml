@@ -4,4 +4,5 @@ install:
 script:
   - tox
 env:
+  - TOXENV=non-integration
   - TOXENV=pep8
