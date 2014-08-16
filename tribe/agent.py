@@ -23,38 +23,42 @@
 import time
 
 from tribe import client
+from tribe import config
 from tribe import util
 
 
 class Agent(object):
     """
-    Tribe Agent
+    Manages IP addresses on the node running the agent.  Currently only
+    supports IPv4 addresses realized as IP aliases on the configured interface.
 
-    agent
-      - start loop
-      - create base nodes with low ttl
-      - ping
-          - add itself with a low ttl
-            /tribe/nodes/$hostname: time.time()
-      - watch /tribe/nodes/
+    An agents workflow:
+      1. Start the agent's loop.
+      2. Begin watching /tribe/nodes/ for changes.
+      3. On change use consistent hashing to map IP(s) to node running agent.
+
+    TODO(retr0h): prevent race condition on watch.
     """
     def __init__(self):
         self._client = client.Client()
+        self._etcd_path = config.Config().etcd_path
         self._sleep_interval = 3
         self._node_ttl = 5
 
     def _ping(self):
-        path = '/tribe/nodes/{0}'.format(util.get_hostname())
+        """
+        add itself with a low ttl to
+          /tribe/nodes/$hostname: time.time()
+        """
+        path = '{prefix}/{hostname}'.format(prefix=self._etcd_path,
+                                            hostname=util.get_hostname())
         self._client.write(path, time.time(), ttl=self._node_ttl)
 
     def _watch(self):
         """
         Blocking...
         """
-        path = '/tribe/nodes'
-        self._watch_key(path, recursive=True)
-        result = self._get_key(path, recursive=True)
-        print [subkey.key for subkey in result.children]
+        self._watch_key(self._etcd_path, recursive=True)
 
     def run(self):
         while True:

@@ -21,6 +21,7 @@
 # THE SOFTWARE.
 
 import multiprocessing
+import os
 import random
 import string
 import time
@@ -30,6 +31,7 @@ from mock import patch
 from nose.plugins.attrib import attr
 
 from tribe import client
+from tribe import config
 
 
 class TestClient(unittest.TestCase):
@@ -37,13 +39,16 @@ class TestClient(unittest.TestCase):
         return ''.join(random.choice(chars) for x in range(size))
 
     def setUp(self):
-        self._client = client.Client()
+        basedir = os.path.dirname(__file__)
+        f = os.path.join(basedir, 'test.json')
+        self._config = config.Config(config_file=f)
+        self._client = client.Client(self._config)
         self._key = '/{0}'.format(self._random_key())
         self._sleep_time = 0.1
 
     def test_get_key(self):
         with patch('etcd.client.Client.read') as mocked:
-            client.Client().get_key('mocked-key')
+            self._client.get_key('mocked-key')
 
             mocked.assert_called_once_with('mocked-key',
                                            recursive=False,
@@ -88,7 +93,7 @@ class TestClient(unittest.TestCase):
 
     def test_add_key(self):
         with patch('etcd.client.Client.set') as mocked:
-            client.Client().add_key('mocked-key', 'mocked-value')
+            self._client.add_key('mocked-key', 'mocked-value')
 
             mocked.assert_called_once_with('mocked-key',
                                            'mocked-value',
@@ -105,7 +110,7 @@ class TestClient(unittest.TestCase):
 
     def test_watch_key(self):
         with patch('tribe.client.Client.get_key') as mocked:
-            client.Client().watch_key('mocked-key')
+            self._client.watch_key('mocked-key')
 
             mocked.assert_called_once_with('mocked-key',
                                            recursive=False,
@@ -119,11 +124,11 @@ class TestClient(unittest.TestCase):
         queue = multiprocessing.Queue()
 
         def change_value(key, value):
-            c = client.Client()
+            c = client.Client(self._config)
             c.add_key(key, value)
 
         def watch_value(key, queue):
-            c = client.Client()
+            c = client.Client(self._config)
             queue.put(c.watch_key(key).value)
 
         watcher = multiprocessing.Process(target=watch_value,
