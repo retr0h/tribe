@@ -20,6 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
+import datetime
 import multiprocessing
 import os
 import random
@@ -145,3 +146,16 @@ class TestClient(unittest.TestCase):
         changer.join(timeout=5)
 
         self.assertEquals('new-value', result)
+
+    @attr('integration')
+    def test_ping_returns(self):
+        with patch('socket.getfqdn') as mocked:
+            mocked.return_value = 'mocked-fqdn'
+            result = self._client.ping()
+            time.sleep(self._sleep_time)
+
+            self.assertEquals(10, result.ttl)
+            self.assertEquals('/tribe/nodes/mocked-fqdn', result.key)
+            assert datetime.datetime.fromtimestamp(float(result.value))
+
+            self._client.delete_key(result.key)

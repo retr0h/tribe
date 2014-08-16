@@ -23,3 +23,28 @@
 """
 Tribe CLI tool.
 """
+
+import argparse
+
+import tribe
+from tribe import client
+from tribe import config
+
+
+def _parse_args():
+    ap = argparse.ArgumentParser(prog='tribe',
+                                 description=__doc__.strip())
+    ap.add_argument('--version', action='version',
+                    version=tribe.__version__)
+    ap.add_argument('--ping', action='store_true',
+                    help='A list of formats to convert.')
+    args = vars(ap.parse_args())
+    return args
+
+
+if __name__ == '__main__':
+    args = _parse_args()
+    c = config.Config()
+
+    if args['ping']:
+        client.Client(c).ping()

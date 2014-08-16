@@ -30,10 +30,7 @@ from tribe import config
 class TestConfig(unittest.TestCase):
     def setUp(self):
         basedir = os.path.dirname(__file__)
-        print "basedir %s: " % basedir
         f = os.path.join(basedir, 'test.json')
-        print "full path %s: " % f
-        print "working dir %s: " % os.getcwd()
         self._config = config.Config(config_file=f)
 
     def test_connection_tuple_accessor(self):
@@ -46,3 +43,8 @@ class TestConfig(unittest.TestCase):
         result = self._config.etcd_path
 
         self.assertEquals('/tribe/nodes', result)
+
+    def test_ping_ttl_accessor(self):
+        result = self._config.ping_ttl
+
+        self.assertEquals(10, result)
