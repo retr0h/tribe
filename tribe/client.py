@@ -28,10 +28,8 @@ class Client(object):
     A client which handles interactions with etcd.
     """
 
-    def __init__(self, ct=None):
-        # TODO(retr0h): Move this elsewhere.
-        if not ct:
-            ct = (('192.168.20.13', 4001), ('192.168.20.14', 4001))
+    def __init__(self, config):
+        ct = config.connection_tuple
         self._client = etcd.Client(ct)
 
     def get_key(self, key, recursive=False, wait=False):
