@@ -29,18 +29,26 @@ class Config(object):
     """
 
     def __init__(self, **kwargs):
-        config_file = kwargs.get('config_file')
+        config_file = kwargs.get('config_file', '/etc/tribe.json')
         self._config = self._get_config(config_file)
-        self.connection_tuple = self._get_connection_tuple()
-        self.etcd_path = self._get_etcd_path()
 
     def _get_config(self, config_file):
         return json.load(open(config_file))
 
-    def _get_connection_tuple(self):
-        hosts = self._config.get('hosts')
-        port = self._config.get('port')
+    @property
+    def connection_tuple(self):
+        """
+        Create a connection object for `etcd.Client`.  Returns a tuple
+        consisting of tuples in the form of (host, port).
+        """
+        hosts = self._config.get('etcd_hosts')
+        port = self._config.get('etcd_port', 4001)
         return tuple([tuple([host, port]) for host in hosts])
 
-    def _get_etcd_path(self):
-        return self._config.get('etcd_prefix')
+    @property
+    def etcd_path(self):
+        return self._config.get('etcd_prefix', '/tribe/nodes')
+
+    @property
+    def ping_ttl(self):
+        return self._config.get('ping_ttl', 10)

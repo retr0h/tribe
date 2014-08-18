@@ -24,7 +24,6 @@ import time
 
 from tribe import client
 from tribe import config
-from tribe import util
 
 
 class Agent(object):
@@ -34,7 +33,12 @@ class Agent(object):
 
     An agents workflow:
       1. Start the agent's loop.
-      2. Begin watching /tribe/nodes/ for changes.
+      2. Begin watching `config.etcd_path` for changes.
+        - Currently keys are added to this directory by cron job executing
+          `tribe --ping`.
+        - Keys are added with a configurable TTL.
+        - Allow etcd to expire keys which have not been updated before the
+          TTL expires.  We assume this is a server failure and re-hash IPs.
       3. On change use consistent hashing to map IP(s) to node running agent.
 
     TODO(retr0h): prevent race condition on watch.
@@ -43,16 +47,6 @@ class Agent(object):
         self._client = client.Client()
         self._etcd_path = config.Config().etcd_path
         self._sleep_interval = 3
-        self._node_ttl = 5
-
-    def _ping(self):
-        """
-        add itself with a low ttl to
-          /tribe/nodes/$hostname: time.time()
-        """
-        path = '{prefix}/{hostname}'.format(prefix=self._etcd_path,
-                                            hostname=util.get_hostname())
-        self._client.write(path, time.time(), ttl=self._node_ttl)
 
     def _watch(self):
         """

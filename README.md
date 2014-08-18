@@ -7,6 +7,15 @@ A tool for maintaining a consistent list of IP addresses across a set of availab
 
 A modern take on [Wackamole](http://www.backhand.org/wackamole).
 
+Usage
+=====
+
+    $ tribe -h
+
+Manually executing the CLI:
+
+    $ PYTHONPATH=$PYTHONPATH:. python tribe/shell.py
+
 Testing
 =======
 

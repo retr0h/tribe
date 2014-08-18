@@ -20,7 +20,11 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
+import time
+
 import etcd
+
+from tribe import util
 
 
 class Client(object):
@@ -31,6 +35,8 @@ class Client(object):
     def __init__(self, config):
         ct = config.connection_tuple
         self._client = etcd.Client(ct)
+        self._etcd_path = config.etcd_path
+        self._ping_ttl = config.ping_ttl
 
     def get_key(self, key, recursive=False, wait=False):
         """
@@ -57,3 +63,12 @@ class Client(object):
 
     def watch_key(self, key, recursive=False):
         return self.get_key(key, recursive=recursive, wait=True)
+
+    def ping(self):
+        """
+        Add a key to the `config.etcd_path` with a TTL of `config.ping_ttl`.
+        A wrapper around `client.add_key`.  Returns an etcd.EtcdResult.
+        """
+        path = '{prefix}/{hostname}'.format(prefix=self._etcd_path,
+                                            hostname=util.get_hostname())
+        return self._client.write(path, time.time(), ttl=self._ping_ttl)
