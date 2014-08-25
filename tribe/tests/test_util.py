@@ -22,6 +22,7 @@
 
 import unittest2 as unittest
 from mock import patch
+from nose.plugins.attrib import attr
 
 from tribe import util
 
@@ -33,3 +34,26 @@ class TestUtil(unittest.TestCase):
             result = util.get_hostname()
 
             self.assertEquals('mocked-fqdn', result)
+
+    @attr('integration')
+    def test_hash_addresses(self):
+        servers = ['mocked-1.example.com',
+                   'mocked-2.example.com',
+                   'mocked-3.example.com']
+        addresses = ['1.1.1.1',
+                     '2.2.2.2',
+                     '3.3.3.3']
+        with patch('socket.getfqdn') as mocked:
+            mocked.return_value = 'mocked-3.example.com'
+            result = util.hash_addresses(servers, addresses)
+            expected = ['2.2.2.2', '3.3.3.3']
+
+            self.assertEquals(expected, result)
+
+    @attr('integration')
+    def test_hash_addresses_returns_empty_list(self):
+        servers = ['mocked-1.example.com']
+        addresses = ['1.1.1.1']
+        result = util.hash_addresses(servers, addresses)
+
+        self.assertEquals([], result)
