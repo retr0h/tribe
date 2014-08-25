@@ -22,6 +22,27 @@
 
 import socket
 
+import hash_ring
+
 
 def get_hostname():
     return socket.getfqdn()
+
+
+def hash_addresses(servers, addresses):
+    """
+    Consistently hash `addresses` across a list of `servers`.  Returns a list
+    of IPv4 addresses the node now manages.
+
+    :param servers: A list of servers participating.
+    :param addresses: A list of IPv4 addresses to be hashed against the
+                      participating servers.
+    """
+    ring = hash_ring.HashRing(servers)
+    addr_dict = {}
+    hostname = get_hostname()
+    for address in addresses:
+        server = ring.get_node(address)
+        addr_dict.setdefault(server, []).append(address)
+
+    return addr_dict.get(hostname, [])
