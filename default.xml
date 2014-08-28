@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<manifest>
-  <remote name="github" fetch="git://github.com/" />
-
-  <project name="retr0h/ansible-etcd" remote="github" revision="master" path="vagrant/roles/retr0h.etcd/"/>
-</manifest>
