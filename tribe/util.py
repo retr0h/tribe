@@ -20,6 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
+import itertools
 import socket
 
 import hash_ring
@@ -55,3 +56,14 @@ def my_addresses(servers, addresses):
     ha = hash_addresses(servers, addresses)
 
     return ha.get(hostname, [])
+
+
+def not_my_addresses(servers, addresses):
+    """
+    Returns a list of IPv4 addresses the node does not manage.
+    """
+    hostname = get_hostname()
+    ha = hash_addresses(servers, addresses)
+    ha.pop(hostname, [])
+
+    return list(itertools.chain(*ha.values()))

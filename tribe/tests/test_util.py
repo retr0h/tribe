@@ -66,6 +66,31 @@ class TestUtil(unittest.TestCase):
     def test_my_addresses_returns_empty_list(self):
         servers = ['mocked-1.example.com']
         addresses = ['1.1.1.1']
-        result = util.my_addresses(servers, addresses)
+        with patch('socket.getfqdn') as mocked:
+            mocked.return_value = 'mocked-3.example.com'
+            result = util.my_addresses(servers, addresses)
 
         self.assertEquals([], result)
+
+    def test_not_my_addresses(self):
+        servers = ['mocked-1.example.com',
+                   'mocked-2.example.com',
+                   'mocked-3.example.com']
+        addresses = ['1.1.1.1', '2.1.1.1', '3.1.1.1', '4.1.1.1',
+                     '5.1.1.1', '6.1.1.1', '7.1.1.1', '8.1.1.1']
+        with patch('socket.getfqdn') as mocked:
+            mocked.return_value = 'mocked-3.example.com'
+            result = util.not_my_addresses(servers, addresses)
+            expected = ['1.1.1.1', '3.1.1.1', '2.1.1.1',
+                        '4.1.1.1', '5.1.1.1', '7.1.1.1']
+
+            self.assertEquals(expected, result)
+
+    def test_not_my_addresses_returns_empty_list(self):
+        servers = ['mocked-1.example.com']
+        addresses = ['1.1.1.1']
+        with patch('socket.getfqdn') as mocked:
+            mocked.return_value = 'mocked-1.example.com'
+            result = util.not_my_addresses(servers, addresses)
+
+            self.assertEquals([], result)
