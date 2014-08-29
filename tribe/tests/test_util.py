@@ -22,7 +22,6 @@
 
 import unittest2 as unittest
 from mock import patch
-from nose.plugins.attrib import attr
 
 from tribe import util
 
@@ -35,7 +34,6 @@ class TestUtil(unittest.TestCase):
 
             self.assertEquals('mocked-fqdn', result)
 
-    @attr('integration')
     def test_hash_addresses(self):
         servers = ['mocked-1.example.com',
                    'mocked-2.example.com',
@@ -50,7 +48,6 @@ class TestUtil(unittest.TestCase):
 
             self.assertEquals(expected, result)
 
-    @attr('integration')
     def test_hash_addresses_returns_empty_list(self):
         servers = ['mocked-1.example.com']
         addresses = ['1.1.1.1']
