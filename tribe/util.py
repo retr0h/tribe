@@ -31,8 +31,8 @@ def get_hostname():
 
 def hash_addresses(servers, addresses):
     """
-    Consistently hash `addresses` across a list of `servers`.  Returns a list
-    of IPv4 addresses the node now manages.
+    Consistently hash `addresses` across a list of `servers`.  Returns a dict
+    of {hostname => [IPv4 addresses the node manages]}.
 
     :param servers: A list of servers participating.
     :param addresses: A list of IPv4 addresses to be hashed against the
@@ -40,9 +40,18 @@ def hash_addresses(servers, addresses):
     """
     ring = hash_ring.HashRing(servers)
     addr_dict = {}
-    hostname = get_hostname()
     for address in addresses:
         server = ring.get_node(address)
         addr_dict.setdefault(server, []).append(address)
 
-    return addr_dict.get(hostname, [])
+    return addr_dict  # .get(hostname, [])
+
+
+def my_addresses(servers, addresses):
+    """
+    Returns a list of IPv4 addresses the node manages.
+    """
+    hostname = get_hostname()
+    ha = hash_addresses(servers, addresses)
+
+    return ha.get(hostname, [])

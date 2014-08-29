@@ -41,16 +41,31 @@ class TestUtil(unittest.TestCase):
         addresses = ['1.1.1.1',
                      '2.2.2.2',
                      '3.3.3.3']
+        result = util.hash_addresses(servers, addresses)
+        expected = {
+            'mocked-3.example.com': ['2.2.2.2', '3.3.3.3'],
+            'mocked-1.example.com': ['1.1.1.1']
+        }
+
+        self.assertEquals(expected, result)
+
+    def test_my_addresses(self):
+        servers = ['mocked-1.example.com',
+                   'mocked-2.example.com',
+                   'mocked-3.example.com']
+        addresses = ['1.1.1.1',
+                     '2.2.2.2',
+                     '3.3.3.3']
         with patch('socket.getfqdn') as mocked:
             mocked.return_value = 'mocked-3.example.com'
-            result = util.hash_addresses(servers, addresses)
+            result = util.my_addresses(servers, addresses)
             expected = ['2.2.2.2', '3.3.3.3']
 
             self.assertEquals(expected, result)
 
-    def test_hash_addresses_returns_empty_list(self):
+    def test_my_addresses_returns_empty_list(self):
         servers = ['mocked-1.example.com']
         addresses = ['1.1.1.1']
-        result = util.hash_addresses(servers, addresses)
+        result = util.my_addresses(servers, addresses)
 
         self.assertEquals([], result)
