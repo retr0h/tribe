@@ -45,7 +45,7 @@ def hash_addresses(servers, addresses):
         server = ring.get_node(address)
         addr_dict.setdefault(server, []).append(address)
 
-    return addr_dict  # .get(hostname, [])
+    return addr_dict
 
 
 def my_addresses(servers, addresses):
