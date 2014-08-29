@@ -61,7 +61,7 @@ class TestUtil(unittest.TestCase):
             result = util.my_addresses(servers, addresses)
             expected = ['2.2.2.2', '3.3.3.3']
 
-            self.assertEquals(expected, result)
+            self.assertItemsEqual(expected, result)
 
     def test_my_addresses_returns_empty_list(self):
         servers = ['mocked-1.example.com']
@@ -84,7 +84,7 @@ class TestUtil(unittest.TestCase):
             expected = ['1.1.1.1', '3.1.1.1', '2.1.1.1',
                         '4.1.1.1', '5.1.1.1', '7.1.1.1']
 
-            self.assertEquals(expected, result)
+            self.assertItemsEqual(expected, result)
 
     def test_not_my_addresses_returns_empty_list(self):
         servers = ['mocked-1.example.com']

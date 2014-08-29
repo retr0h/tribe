@@ -24,12 +24,6 @@ Requirements:
 * Ansible >= 1.6
 * Vagrant >= 1.6
 * Tox
-* Android's Repo Tool
-
-Download external dependencies:
-
-    $ repo init -u https://github.com/retr0h/tribe
-    $ repo sync
 
 Execute unit tests:
 
