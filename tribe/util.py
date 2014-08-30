@@ -60,7 +60,6 @@ def all_addresses(servers, addresses):
     """
     Returns a list of all the IPv4 addresses tribe is managing.
     """
-    hostname = get_hostname()
     ha = hash_addresses(servers, addresses)
 
     return _flatten_address_list(ha)
