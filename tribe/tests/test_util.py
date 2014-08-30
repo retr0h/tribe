@@ -27,6 +27,14 @@ from tribe import util
 
 
 class TestUtil(unittest.TestCase):
+    def setUp(self):
+        self._servers = ['mocked-1.example.com',
+                         'mocked-2.example.com',
+                         'mocked-3.example.com']
+        self._addresses = ['1.1.1.1',
+                           '2.2.2.2',
+                           '3.3.3.3']
+
     def test_get_hostname(self):
         with patch('socket.getfqdn') as mocked:
             mocked.return_value = 'mocked-fqdn'
@@ -34,14 +42,15 @@ class TestUtil(unittest.TestCase):
 
             self.assertEquals('mocked-fqdn', result)
 
+    def test_flatten_address_list(self):
+        d = {'foo': [1, 2, 3], 'bar': [456]}
+        result = util._flatten_address_list(d)
+        expected = [1, 2, 3, 456]
+
+        self.assertItemsEqual(expected, result)
+
     def test_hash_addresses(self):
-        servers = ['mocked-1.example.com',
-                   'mocked-2.example.com',
-                   'mocked-3.example.com']
-        addresses = ['1.1.1.1',
-                     '2.2.2.2',
-                     '3.3.3.3']
-        result = util.hash_addresses(servers, addresses)
+        result = util.hash_addresses(self._servers, self._addresses)
         expected = {
             'mocked-3.example.com': ['2.2.2.2', '3.3.3.3'],
             'mocked-1.example.com': ['1.1.1.1']
@@ -49,16 +58,16 @@ class TestUtil(unittest.TestCase):
 
         self.assertEquals(expected, result)
 
+    def test_all_addresses(self):
+        result = util.all_addresses(self._servers, self._addresses)
+        expected = ['1.1.1.1', '2.2.2.2', '3.3.3.3']
+
+        self.assertItemsEqual(expected, result)
+
     def test_my_addresses(self):
-        servers = ['mocked-1.example.com',
-                   'mocked-2.example.com',
-                   'mocked-3.example.com']
-        addresses = ['1.1.1.1',
-                     '2.2.2.2',
-                     '3.3.3.3']
         with patch('socket.getfqdn') as mocked:
             mocked.return_value = 'mocked-3.example.com'
-            result = util.my_addresses(servers, addresses)
+            result = util.my_addresses(self._servers, self._addresses)
             expected = ['2.2.2.2', '3.3.3.3']
 
             self.assertItemsEqual(expected, result)
@@ -73,14 +82,11 @@ class TestUtil(unittest.TestCase):
         self.assertEquals([], result)
 
     def test_not_my_addresses(self):
-        servers = ['mocked-1.example.com',
-                   'mocked-2.example.com',
-                   'mocked-3.example.com']
         addresses = ['1.1.1.1', '2.1.1.1', '3.1.1.1', '4.1.1.1',
                      '5.1.1.1', '6.1.1.1', '7.1.1.1', '8.1.1.1']
         with patch('socket.getfqdn') as mocked:
             mocked.return_value = 'mocked-3.example.com'
-            result = util.not_my_addresses(servers, addresses)
+            result = util.not_my_addresses(self._servers, addresses)
             expected = ['1.1.1.1', '3.1.1.1', '2.1.1.1',
                         '4.1.1.1', '5.1.1.1', '7.1.1.1']
 
