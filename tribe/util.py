@@ -28,14 +28,6 @@ import subprocess
 import hash_ring
 
 
-def _flatten_address_list(d):
-    """
-    Takes a dict of lists and flattens the values into a single list.
-    Returns a list.
-    """
-    return list(itertools.chain(*d.values()))
-
-
 def get_hostname():
     return socket.getfqdn()
 
@@ -58,15 +50,6 @@ def hash_addresses(servers, addresses):
     return addr_dict
 
 
-def all_addresses(servers, addresses):
-    """
-    Returns a list of all the IPv4 addresses tribe is managing.
-    """
-    ha = hash_addresses(servers, addresses)
-
-    return _flatten_address_list(ha)
-
-
 def my_addresses(servers, addresses):
     """
     Returns a list of IPv4 addresses the node manages.
@@ -85,7 +68,7 @@ def not_my_addresses(servers, addresses):
     ha = hash_addresses(servers, addresses)
     ha.pop(hostname, [])
 
-    return _flatten_address_list(ha)
+    return list(itertools.chain(*ha.values()))
 
 
 def execute(command):
