@@ -105,3 +105,15 @@ def execute(command):
     exitcode = process.wait()
 
     return exitcode, out, err
+
+
+def add_alias(ip, dev, label):
+    cmd = 'ip addr add {ip} dev {dev} label {label}'.format(**locals())
+
+    exitcode, out, err = execute(cmd)
+
+
+def delete_alias(ip, dev, label):
+    cmd = 'ip addr del {ip} dev {dev} label {label}'.format(**locals())
+
+    exitcode, out, err = execute(cmd)

@@ -22,6 +22,7 @@
 
 import unittest2 as unittest
 from mock import patch
+from mock import Mock
 
 from tribe import util
 
@@ -118,3 +119,19 @@ class TestUtil(unittest.TestCase):
         _, _, err = util.execute(cmd)
 
         self.assertEquals('stderr\n', err)
+
+    def test_add_alias(self):
+        with patch('tribe.util.execute') as mocked:
+            mocked.return_value = (0, Mock(), Mock())
+            util.add_alias('10.0.0.1/24', 'eth1', 'eth1:10')
+            cmd = 'ip addr add 10.0.0.1/24 dev eth1 label eth1:10'
+
+            mocked.assert_called_once_with(cmd)
+
+    def test_delete_alias(self):
+        with patch('tribe.util.execute') as mocked:
+            mocked.return_value = (0, Mock(), Mock())
+            util.delete_alias('10.0.0.1/24', 'eth1', 'eth1:10')
+            cmd = 'ip addr del 10.0.0.1/24 dev eth1 label eth1:10'
+
+            mocked.assert_called_once_with(cmd)
