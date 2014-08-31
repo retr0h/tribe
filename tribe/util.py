@@ -21,7 +21,9 @@
 # THE SOFTWARE.
 
 import itertools
+import os
 import socket
+import subprocess
 
 import hash_ring
 
@@ -84,3 +86,22 @@ def not_my_addresses(servers, addresses):
     ha.pop(hostname, [])
 
     return _flatten_address_list(ha)
+
+
+def execute(command):
+    """
+    Executes a command in a subprocess.  Returns a tuple of
+    (exitcode, out, err).
+
+    :param command: Command string to execute.
+    """
+    process = subprocess.Popen(command,
+                               cwd=os.getcwd(),
+                               stdin=subprocess.PIPE,
+                               stdout=subprocess.PIPE,
+                               stderr=subprocess.PIPE,
+                               shell=True)
+    (out, err) = process.communicate()
+    exitcode = process.wait()
+
+    return exitcode, out, err

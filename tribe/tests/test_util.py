@@ -100,3 +100,21 @@ class TestUtil(unittest.TestCase):
             result = util.not_my_addresses(servers, addresses)
 
             self.assertEquals([], result)
+
+    def test_execute_returns_exitcode_tuple(self):
+        cmd = 'test true'
+        result, _, _ = util.execute(cmd)
+
+        self.assertEquals(0, result)
+
+    def test_execute_returns_stdout_tuple(self):
+        cmd = 'echo stdout'
+        _, out, _ = util.execute(cmd)
+
+        self.assertEquals('stdout\n', out)
+
+    def test_execute_returns_stderr_tuple(self):
+        cmd = 'echo stderr >&2'
+        _, _, err = util.execute(cmd)
+
+        self.assertEquals('stderr\n', err)
