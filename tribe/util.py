@@ -92,15 +92,17 @@ def execute(command):
 
 
 def add_alias(ip, dev, label):
-    cmd = 'ip addr add {ip} dev {dev} label {label}'.format(**locals())
+    if not get_alias(dev):
+        cmd = 'ip addr add {ip} dev {dev} label {label}'.format(**locals())
 
-    exitcode, out, err = execute(cmd)
+        exitcode, out, err = execute(cmd)
 
 
 def delete_alias(ip, dev, label):
-    cmd = 'ip addr del {ip} dev {dev} label {label}'.format(**locals())
+    if not get_alias(dev):
+        cmd = 'ip addr del {ip} dev {dev} label {label}'.format(**locals())
 
-    exitcode, out, err = execute(cmd)
+        exitcode, out, err = execute(cmd)
 
 
 def get_alias(dev):
