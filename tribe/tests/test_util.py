@@ -122,3 +122,15 @@ class TestUtil(unittest.TestCase):
             cmd = 'ip addr del 10.0.0.1/24 dev eth1 label eth1:10'
 
             mocked.assert_called_once_with(cmd)
+
+    def test_get_alias(self):
+        with patch('netifaces.ifaddresses') as mocked:
+            mocked.return_value = True
+            result = util.get_alias('valid')
+
+            self.assertEquals(True, result)
+
+    def test_get_alias_with_invalid_dev(self):
+        result = util.get_alias('invalid')
+
+        self.assertEquals(False, result)
