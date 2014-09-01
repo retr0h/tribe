@@ -41,7 +41,7 @@ class TestClient(unittest.TestCase):
 
     def setUp(self):
         basedir = os.path.dirname(__file__)
-        f = os.path.join(basedir, 'test.json')
+        f = os.path.join(basedir, 'support', 'test.json')
         self._config = config.Config(config_file=f)
         self._client = client.Client(self._config)
         self._key = '/{0}'.format(self._random_key())

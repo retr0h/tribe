@@ -23,7 +23,6 @@
 import time
 
 from tribe import client
-from tribe import config
 
 
 class Agent(object):
@@ -43,14 +42,15 @@ class Agent(object):
 
     TODO(retr0h): prevent race condition on watch.
     """
-    def __init__(self):
+    def __init__(self, config):
         self._client = client.Client()
-        self._etcd_path = config.Config().etcd_path
-        self._sleep_interval = 3
+        self._etcd_path = config.etcd_path
+        self._sleep_interval = config.sleep_interval
 
     def _watch(self):
         """
-        Blocking...
+        Blocking call to watch the `etcd_path` for changes.  Returns a list of
+        etcd.EtcdResult objects.
         """
         self._watch_key(self._etcd_path, recursive=True)
 

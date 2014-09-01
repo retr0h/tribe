@@ -20,39 +20,17 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
-import json
+import os
+
+import unittest2 as unittest
+
+from tribe import agent
+from tribe import config
 
 
-class Config(object):
-    """
-    A class which handles the configuration of tribe.
-    """
-
-    def __init__(self, **kwargs):
-        config_file = kwargs.get('config_file', '/etc/tribe.json')
-        self._config = self._get_config(config_file)
-
-    def _get_config(self, config_file):
-        return json.load(open(config_file))
-
-    @property
-    def connection_tuple(self):
-        """
-        Create a connection object for `etcd.Client`.  Returns a tuple
-        consisting of tuples in the form of (host, port).
-        """
-        hosts = self._config.get('etcd_hosts')
-        port = self._config.get('etcd_port', 4001)
-        return tuple([tuple([host, port]) for host in hosts])
-
-    @property
-    def etcd_path(self):
-        return self._config.get('etcd_prefix', '/tribe/nodes')
-
-    @property
-    def ping_ttl(self):
-        return self._config.get('ping_ttl', 10)
-
-    @property
-    def sleep_interval(self):
-        return self._config.get('sleep_interval', 3)
+class TestClient(unittest.TestCase):
+    def setUp(self):
+        basedir = os.path.dirname(__file__)
+        f = os.path.join(basedir, 'support', 'test.json')
+        self._config = config.Config(config_file=f)
+        self._client = agent.Agent(self._config)

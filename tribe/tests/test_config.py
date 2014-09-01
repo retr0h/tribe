@@ -30,7 +30,7 @@ from tribe import config
 class TestConfig(unittest.TestCase):
     def setUp(self):
         basedir = os.path.dirname(__file__)
-        f = os.path.join(basedir, 'test.json')
+        f = os.path.join(basedir, 'support', 'test.json')
         self._config = config.Config(config_file=f)
 
     def test_connection_tuple_accessor(self):
@@ -48,3 +48,8 @@ class TestConfig(unittest.TestCase):
         result = self._config.ping_ttl
 
         self.assertEquals(10, result)
+
+    def test_sleep_interval_accessor(self):
+        result = self._config.sleep_interval
+
+        self.assertEquals(3, result)
