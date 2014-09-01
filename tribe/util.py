@@ -26,6 +26,7 @@ import socket
 import subprocess
 
 import hash_ring
+import netifaces
 
 
 def get_hostname():
@@ -100,3 +101,11 @@ def delete_alias(ip, dev, label):
     cmd = 'ip addr del {ip} dev {dev} label {label}'.format(**locals())
 
     exitcode, out, err = execute(cmd)
+
+
+def get_alias(dev):
+    try:
+        netifaces.ifaddresses(dev)
+        return True
+    except ValueError:
+        return False
