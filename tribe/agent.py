@@ -45,15 +45,30 @@ class Agent(object):
         self._client = client.Client(config)
         self._config = config
 
+    def _interface_label(self, interface, address):
+        return '{0}:{1}'.format(interface, address.split('.')[-1])
+
     def _cleanup(self):
+        # TODO(retr0h): log
         print 'addresses to cleanup'
-        print util.get_other_addresses(self._config.servers,
-                                       self._config.aliases)
+        other_addresses = util.get_other_addresses(self._config.servers,
+                                                   self._config.aliases)
+        for address in other_addresses:
+            print address
+            interface = self._config.interface
+            label = self._interface_label(interface, address)
+            util.delete_alias(address, interface, label)
 
     def _setup(self):
+        # TODO(retr0h): log
         print 'addresses to add'
-        print util.get_own_addresses(self._config.servers,
-                                     self._config.aliases)
+        own_addresses = util.get_own_addresses(self._config.servers,
+                                               self._config.aliases)
+        for address in own_addresses:
+            print address
+            interface = self._config.interface
+            label = self._interface_label(interface, address)
+            util.add_alias(address, interface, label)
 
     def run(self):
         while True:

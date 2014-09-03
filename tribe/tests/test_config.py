@@ -51,14 +51,17 @@ class TestConfig(unittest.TestCase):
 
     def test_aliases_accessor(self):
         result = self._config.aliases
-        expected = ['10.0.0.10', '11.0.0.10', '12.0.0.10']
+        expected = ['10.0.0.10/24', '11.0.0.10/24', '12.0.0.10/24']
 
         self.assertEquals(expected, result)
 
     def test_servers_accessor(self):
         result = self._config.servers
-        expected = ['tribe-1',
-                    'tribe-2',
-                    'tribe-3']
+        expected = ['tribe-1', 'tribe-2', 'tribe-3']
 
         self.assertEquals(expected, result)
+
+    def test_interface_accessor(self):
+        result = self._config.interface
+
+        self.assertEquals('eth0', result)
