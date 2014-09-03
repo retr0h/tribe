@@ -60,3 +60,7 @@ class Config(object):
     @property
     def servers(self):
         return self._config.get('servers', [])
+
+    @property
+    def interface(self):
+        return self._config.get('interface', 'eth0')

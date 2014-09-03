@@ -91,23 +91,27 @@ def execute(command):
     return exitcode, out, err
 
 
-def add_alias(ip, dev, label):
-    if not get_alias(dev):
-        cmd = 'ip addr add {ip} dev {dev} label {label}'.format(**locals())
+def add_alias(ip, interface, label):
+    if not get_alias(interface):
+        cmd = ('ip addr add {ip} '
+               'dev {interface} '
+               'label {label}').format(**locals())
 
         exitcode, out, err = execute(cmd)
 
 
-def delete_alias(ip, dev, label):
-    if not get_alias(dev):
-        cmd = 'ip addr del {ip} dev {dev} label {label}'.format(**locals())
+def delete_alias(ip, interface, label):
+    if not get_alias(interface):
+        cmd = ('ip addr del {ip} '
+               'dev {interface} '
+               'label {label}').format(**locals())
 
         exitcode, out, err = execute(cmd)
 
 
-def get_alias(dev):
+def get_alias(interface):
     try:
-        netifaces.ifaddresses(dev)
+        netifaces.ifaddresses(interface)
         return True
     except ValueError:
         return False
