@@ -57,8 +57,8 @@ class TestConfig(unittest.TestCase):
 
     def test_servers_accessor(self):
         result = self._config.servers
-        expected = ['mocked-1.example.com',
-                    'mocked-2.example.com',
-                    'mocked-3.example.com']
+        expected = ['tribe-1',
+                    'tribe-2',
+                    'tribe-3']
 
         self.assertEquals(expected, result)

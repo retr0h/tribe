@@ -9,8 +9,8 @@
     "12.0.0.10"
   ],
   "servers": [
-    "mocked-1.example.com",
-    "mocked-2.example.com",
-    "mocked-3.example.com"
+    "tribe-1",
+    "tribe-2",
+    "tribe-3"
   ]
 }
