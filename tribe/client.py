@@ -35,8 +35,7 @@ class Client(object):
     def __init__(self, config):
         ct = config.connection_tuple
         self._client = etcd.Client(ct)
-        self._etcd_path = config.etcd_path
-        self._ping_ttl = config.ping_ttl
+        self._config = config
 
     def get_key(self, key, recursive=False, wait=False):
         """
@@ -69,9 +68,11 @@ class Client(object):
         Add a key to the `config.etcd_path` with a TTL of `config.ping_ttl`.
         A wrapper around `client.add_key`.
         """
-        path = '{prefix}/{hostname}'.format(prefix=self._etcd_path,
+        path = '{prefix}/{hostname}'.format(prefix=self._config.etcd_path,
                                             hostname=util.get_hostname())
-        response = self._client.write(path, time.time(), ttl=self._ping_ttl)
+        response = self._client.write(path,
+                                      time.time(),
+                                      ttl=self._config.ping_ttl)
         if response.action == 'set':
             # TODO(retr0h): log
             print 'ping -> [ok]'
