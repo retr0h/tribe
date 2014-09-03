@@ -33,4 +33,4 @@ class TestClient(unittest.TestCase):
         basedir = os.path.dirname(__file__)
         f = os.path.join(basedir, 'support', 'test.json')
         self._config = config.Config(config_file=f)
-        self._client = agent.Agent(self._config)
+        self._agent = agent.Agent(self._config)

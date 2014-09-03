@@ -20,7 +20,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
-import datetime
 import multiprocessing
 import os
 import random
@@ -30,6 +29,7 @@ import time
 import unittest2 as unittest
 from mock import patch
 from nose.plugins.attrib import attr
+from nose.plugins.capture import Capture
 
 from tribe import client
 from tribe import config
@@ -148,14 +148,10 @@ class TestClient(unittest.TestCase):
         self.assertEquals('new-value', result)
 
     @attr('integration')
-    def test_ping_returns(self):
-        with patch('socket.getfqdn') as mocked:
-            mocked.return_value = 'mocked-fqdn'
-            result = self._client.ping()
-            time.sleep(self._sleep_time)
+    def test_ping_prints_status(self):
+        c = Capture()
+        c.start()
+        self._client.ping()
+        c.end()
 
-            self.assertEquals(10, result.ttl)
-            self.assertEquals('/tribe/nodes/mocked-fqdn', result.key)
-            assert datetime.datetime.fromtimestamp(float(result.value))
-
-            self._client.delete_key(result.key)
+        self.assertEquals('ping -> [ok]\n', c.buffer)

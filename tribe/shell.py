@@ -27,6 +27,7 @@ Tribe CLI tool.
 import argparse
 
 import tribe
+from tribe import agent
 from tribe import client
 from tribe import config
 
@@ -37,7 +38,9 @@ def _parse_args():
     ap.add_argument('--version', action='version',
                     version=tribe.__version__)
     ap.add_argument('--ping', action='store_true',
-                    help='A list of formats to convert.')
+                    help='Ping the `etcd_path`.')
+    ap.add_argument('--agent', action='store_true',
+                    help='Start the agent.')
     args = vars(ap.parse_args())
     return args
 
@@ -48,3 +51,5 @@ if __name__ == '__main__':
 
     if args['ping']:
         client.Client(c).ping()
+    elif args['agent']:
+        agent.Agent(c).run()

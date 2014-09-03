@@ -51,7 +51,7 @@ def hash_addresses(servers, addresses):
     return addr_dict
 
 
-def my_addresses(servers, addresses):
+def get_own_addresses(servers, addresses):
     """
     Returns a list of IPv4 addresses the node manages.
     """
@@ -61,7 +61,7 @@ def my_addresses(servers, addresses):
     return ha.get(hostname, [])
 
 
-def not_my_addresses(servers, addresses):
+def get_other_addresses(servers, addresses):
     """
     Returns a list of IPv4 addresses the node does not manage.
     """
