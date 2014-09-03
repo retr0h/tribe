@@ -67,8 +67,11 @@ class Client(object):
     def ping(self):
         """
         Add a key to the `config.etcd_path` with a TTL of `config.ping_ttl`.
-        A wrapper around `client.add_key`.  Returns an etcd.EtcdResult.
+        A wrapper around `client.add_key`.
         """
         path = '{prefix}/{hostname}'.format(prefix=self._etcd_path,
                                             hostname=util.get_hostname())
-        return self._client.write(path, time.time(), ttl=self._ping_ttl)
+        response = self._client.write(path, time.time(), ttl=self._ping_ttl)
+        if response.action == 'set':
+            # TODO(retr0h): log
+            print 'ping -> [ok]'

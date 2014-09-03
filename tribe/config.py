@@ -54,5 +54,9 @@ class Config(object):
         return self._config.get('ping_ttl', 10)
 
     @property
-    def sleep_interval(self):
-        return self._config.get('sleep_interval', 3)
+    def aliases(self):
+        return self._config.get('aliases', [])
+
+    @property
+    def servers(self):
+        return self._config.get('servers', [])

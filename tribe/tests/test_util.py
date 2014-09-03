@@ -21,8 +21,8 @@
 # THE SOFTWARE.
 
 import unittest2 as unittest
-from mock import patch
 from mock import Mock
+from mock import patch
 
 from tribe import util
 
@@ -52,40 +52,40 @@ class TestUtil(unittest.TestCase):
 
         self.assertEquals(expected, result)
 
-    def test_my_addresses(self):
+    def test_get_own_addresses(self):
         with patch('socket.getfqdn') as mocked:
             mocked.return_value = 'mocked-3.example.com'
-            result = util.my_addresses(self._servers, self._addresses)
+            result = util.get_own_addresses(self._servers, self._addresses)
             expected = ['2.2.2.2', '3.3.3.3']
 
             self.assertItemsEqual(expected, result)
 
-    def test_my_addresses_returns_empty_list(self):
+    def test_get_own_addresses_returns_empty_list(self):
         servers = ['mocked-1.example.com']
         addresses = ['1.1.1.1']
         with patch('socket.getfqdn') as mocked:
             mocked.return_value = 'mocked-3.example.com'
-            result = util.my_addresses(servers, addresses)
+            result = util.get_own_addresses(servers, addresses)
 
         self.assertEquals([], result)
 
-    def test_not_my_addresses(self):
+    def test_get_other_addresses(self):
         addresses = ['1.1.1.1', '2.1.1.1', '3.1.1.1', '4.1.1.1',
                      '5.1.1.1', '6.1.1.1', '7.1.1.1', '8.1.1.1']
         with patch('socket.getfqdn') as mocked:
             mocked.return_value = 'mocked-3.example.com'
-            result = util.not_my_addresses(self._servers, addresses)
+            result = util.get_other_addresses(self._servers, addresses)
             expected = ['1.1.1.1', '3.1.1.1', '2.1.1.1',
                         '4.1.1.1', '5.1.1.1', '7.1.1.1']
 
             self.assertItemsEqual(expected, result)
 
-    def test_not_my_addresses_returns_empty_list(self):
+    def test_get_other_addresses_returns_empty_list(self):
         servers = ['mocked-1.example.com']
         addresses = ['1.1.1.1']
         with patch('socket.getfqdn') as mocked:
             mocked.return_value = 'mocked-1.example.com'
-            result = util.not_my_addresses(servers, addresses)
+            result = util.get_other_addresses(servers, addresses)
 
             self.assertEquals([], result)
 

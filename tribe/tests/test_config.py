@@ -49,7 +49,16 @@ class TestConfig(unittest.TestCase):
 
         self.assertEquals(10, result)
 
-    def test_sleep_interval_accessor(self):
-        result = self._config.sleep_interval
+    def test_aliases_accessor(self):
+        result = self._config.aliases
+        expected = ['10.0.0.10', '11.0.0.10', '12.0.0.10']
 
-        self.assertEquals(3, result)
+        self.assertEquals(expected, result)
+
+    def test_servers_accessor(self):
+        result = self._config.servers
+        expected = ['mocked-1.example.com',
+                    'mocked-2.example.com',
+                    'mocked-3.example.com']
+
+        self.assertEquals(expected, result)

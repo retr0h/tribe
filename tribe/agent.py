@@ -20,9 +20,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
-import time
-
 from tribe import client
+from tribe import util
 
 
 class Agent(object):
@@ -43,17 +42,23 @@ class Agent(object):
     TODO(retr0h): prevent race condition on watch.
     """
     def __init__(self, config):
-        self._client = client.Client()
+        self._client = client.Client(config)
         self._etcd_path = config.etcd_path
-        self._sleep_interval = config.sleep_interval
+        self._aliases = config.aliases
+        self._servers = config.servers
 
-    def _watch(self):
-        """
-        Blocking call to watch the `etcd_path` for changes.  Returns a list of
-        etcd.EtcdResult objects.
-        """
-        self._watch_key(self._etcd_path, recursive=True)
+    def _cleanup(self):
+        print 'addresses to cleanup'
+        print util.get_other_addresses(self._servers, self._aliases)
+
+    def _setup(self):
+        print 'addresses to add'
+        print util.get_own_addresses(self._servers, self._aliases)
 
     def run(self):
         while True:
-            time.sleep(self._sleep_interval)
+            # TODO(retr0h): log
+            print 'agent -> starting'
+            self._client.watch_key(self._etcd_path, recursive=True)
+            self._cleanup()
+            self._setup()
