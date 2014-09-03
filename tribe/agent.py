@@ -43,22 +43,22 @@ class Agent(object):
     """
     def __init__(self, config):
         self._client = client.Client(config)
-        self._etcd_path = config.etcd_path
-        self._aliases = config.aliases
-        self._servers = config.servers
+        self._config = config
 
     def _cleanup(self):
         print 'addresses to cleanup'
-        print util.get_other_addresses(self._servers, self._aliases)
+        print util.get_other_addresses(self._config.servers,
+                                       self._config.aliases)
 
     def _setup(self):
         print 'addresses to add'
-        print util.get_own_addresses(self._servers, self._aliases)
+        print util.get_own_addresses(self._config.servers,
+                                     self._config.aliases)
 
     def run(self):
         while True:
             # TODO(retr0h): log
             print 'agent -> starting'
-            self._client.watch_key(self._etcd_path, recursive=True)
+            self._client.watch_key(self._config.etcd_path, recursive=True)
             self._cleanup()
             self._setup()
