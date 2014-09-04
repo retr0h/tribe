@@ -94,13 +94,13 @@ def execute(command):
 
 def add_alias_command(ip, interface, label):
     if platform.system() == 'Darwin':
-        cmd = 'ifconfig {interface} alias {ip}'
+        cmd = 'ifconfig {interface} alias {ip}'.format(**locals())
     else:
         cmd = ('ip addr add {ip} '
                'dev {interface} '
-               'label {label}')
+               'label {label}').format(**locals())
 
-    return cmd.format(**locals())
+    return cmd
 
 
 def add_alias(ip, interface, label):
@@ -113,13 +113,13 @@ def add_alias(ip, interface, label):
 def delete_alias_command(ip, interface, label):
     if platform.system() == 'Darwin':
         ip = ip.split('/')[0]
-        cmd = 'ifconfig {interface} -alias {ip}'
+        cmd = 'ifconfig {interface} -alias {ip}'.format(**locals())
     else:
         cmd = ('ip addr del {ip} '
                'dev {interface} '
-               'label {label}')
+               'label {label}').format(**locals())
 
-    return cmd.format(**locals())
+    return cmd
 
 
 def delete_alias(ip, interface, label):
