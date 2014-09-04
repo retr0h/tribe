@@ -22,6 +22,7 @@
 
 import itertools
 import os
+import platform
 import socket
 import subprocess
 
@@ -91,20 +92,39 @@ def execute(command):
     return exitcode, out, err
 
 
-def add_alias(ip, interface, label):
-    if not get_alias(interface):
+def add_alias_command(ip, interface, label):
+    if platform.system() == 'Darwin':
+        cmd = 'ifconfig {interface} alias {ip}'.format(**locals())
+    else:
         cmd = ('ip addr add {ip} '
                'dev {interface} '
                'label {label}').format(**locals())
 
+    return cmd
+
+
+def add_alias(ip, interface, label):
+    if not get_alias(interface):
+        cmd = add_alias_command(ip, interface, label)
+
         exitcode, out, err = execute(cmd)
+
+
+def delete_alias_command(ip, interface, label):
+    if platform.system() == 'Darwin':
+        ip = ip.split('/')[0]
+        cmd = 'ifconfig {interface} -alias {ip}'.format(**locals())
+    else:
+        cmd = ('ip addr del {ip} '
+               'dev {interface} '
+               'label {label}').format(**locals())
+
+    return cmd
 
 
 def delete_alias(ip, interface, label):
     if not get_alias(interface):
-        cmd = ('ip addr del {ip} '
-               'dev {interface} '
-               'label {label}').format(**locals())
+        cmd = delete_alias_command(ip, interface, label)
 
         exitcode, out, err = execute(cmd)
 
