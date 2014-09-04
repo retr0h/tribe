@@ -107,30 +107,15 @@ class TestUtil(unittest.TestCase):
 
         self.assertEquals('stderr\n', err)
 
-    def test_add_alias_command_for_darwin(self):
-        with patch('platform.system') as mocked:
-            mocked.return_value = 'Darwin'
-            result = util.add_alias_command('10.0.0.1/24', 'eth1', 'eth1:10')
-            expected = 'ifconfig eth1 alias 10.0.0.1/24'
-
-            self.assertEquals(expected, result)
-
-    def test_add_alias_command_for_linux(self):
-        with patch('platform.system') as mocked:
-            mocked.return_value = 'Linux'
-            result = util.add_alias_command('10.0.0.1/24', 'eth1', 'eth1:10')
-            expected = 'ip addr add 10.0.0.1/24 dev eth1 label eth1:10'
-
-            self.assertEquals(expected, result)
-
     def test_add_alias(self):
         with patch('tribe.util.get_alias') as mocked_get_alias:
             mocked_get_alias.return_value = False
             with patch('tribe.util.execute') as mocked:
                 mocked.return_value = (0, Mock(), Mock())
                 util.add_alias('10.0.0.1/24', 'eth1', 'eth1:10')
+                cmd = 'ip addr add 10.0.0.1/24 dev eth1 label eth1:10'
 
-                mocked.assert_called_once
+                mocked.assert_called_once_with(cmd)
 
     def test_does_not_add_alias(self):
         with patch('tribe.util.get_alias') as mocked_get_alias:
@@ -139,34 +124,15 @@ class TestUtil(unittest.TestCase):
 
                 assert not mocked.called
 
-    def test_delete_alias_command_for_darwin(self):
-        with patch('platform.system') as mocked:
-            mocked.return_value = 'Darwin'
-            result = util.delete_alias_command('10.0.0.1/24',
-                                               'eth1',
-                                               'eth1:10')
-            expected = 'ifconfig eth1 -alias 10.0.0.1'
-
-            self.assertEquals(expected, result)
-
-    def test_delete_alias_command_for_linux(self):
-        with patch('platform.system') as mocked:
-            mocked.return_value = 'Linux'
-            result = util.delete_alias_command('10.0.0.1/24',
-                                               'eth1',
-                                               'eth1:10')
-            expected = 'ip addr del 10.0.0.1/24 dev eth1 label eth1:10'
-
-            self.assertEquals(expected, result)
-
     def test_delete_alias(self):
         with patch('tribe.util.get_alias') as mocked_get_alias:
             mocked_get_alias.return_value = False
             with patch('tribe.util.execute') as mocked:
                 mocked.return_value = (0, Mock(), Mock())
                 util.delete_alias('10.0.0.1/24', 'eth1', 'eth1:10')
+                cmd = 'ip addr del 10.0.0.1/24 dev eth1 label eth1:10'
 
-                mocked.assert_called_once
+                mocked.assert_called_once_with(cmd)
 
     def test_does_not_delete_alias(self):
         with patch('tribe.util.get_alias') as mocked_get_alias:
