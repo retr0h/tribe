@@ -89,23 +89,18 @@ class TestUtil(unittest.TestCase):
 
             self.assertEquals([], result)
 
-    def test_execute_returns_exitcode_tuple(self):
+    def test_execute(self):
         cmd = 'test true'
-        result, _, _ = util.execute(cmd)
+        result = util.execute(cmd)
 
-        self.assertEquals(0, result)
+        self.assertEquals(True, result)
 
-    def test_execute_returns_stdout_tuple(self):
-        cmd = 'echo stdout'
-        _, out, _ = util.execute(cmd)
+    def test_execute_raises(self):
+        cmd = 'echo err >&2 && exit 1'
+        with self.assertRaises(Exception) as context:
+            util.execute(cmd)
 
-        self.assertEquals('stdout\n', out)
-
-    def test_execute_returns_stderr_tuple(self):
-        cmd = 'echo stderr >&2'
-        _, _, err = util.execute(cmd)
-
-        self.assertEquals('stderr\n', err)
+        self.assertEqual('err\n', context.exception.message)
 
     def test_add_alias(self):
         with patch('tribe.util.get_alias') as mocked_get_alias:

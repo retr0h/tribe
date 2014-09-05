@@ -72,10 +72,25 @@ def get_other_addresses(servers, addresses):
     return list(itertools.chain(*ha.values()))
 
 
+def _handle_result(exitcode, err):
+    """
+    Checks the exitcode for success.  If successful returns True,
+    otherwise raises on failure.
+
+    :param exitcode: An int containing the command's exit status.
+    :param err: A string containing the command's STDERR.
+    :raises: Exception when command failed.
+    """
+    if exitcode == 0:
+        return True
+    else:
+        raise Exception(err)
+
+
 def execute(command):
     """
-    Executes a command in a subprocess.  Returns a tuple of
-    (exitcode, out, err).
+    Executes a command in a subprocess.  Returns the result of
+    `_handle_result()`.
 
     :param command: Command string to execute.
     """
@@ -88,7 +103,7 @@ def execute(command):
     (out, err) = process.communicate()
     exitcode = process.wait()
 
-    return exitcode, out, err
+    return _handle_result(exitcode, err)
 
 
 def add_alias(ip, interface, label):
@@ -97,7 +112,7 @@ def add_alias(ip, interface, label):
                'dev {interface} '
                'label {label}').format(**locals())
 
-        exitcode, out, err = execute(cmd)
+        execute(cmd)
 
 
 def delete_alias(ip, interface, label):
@@ -106,7 +121,7 @@ def delete_alias(ip, interface, label):
                'dev {interface} '
                'label {label}').format(**locals())
 
-        exitcode, out, err = execute(cmd)
+        execute(cmd)
 
 
 def get_alias(interface):
