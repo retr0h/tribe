@@ -1,2 +1,21 @@
 ---
+- apt: pkg={{ item }}
+  with_items:
+    - git
+    - libffi-dev
+    - python-dev
+    - python-pip
+    - python-virtualenv
+
+- pip: >
+    name=git+{{ tribe_repo }}#egg=tribe
+    virtualenv={{ tribe_venv_dir }}
+    virtualenv_site_packages={{ tribe_venv_site_packages }}
+
 - template: src=etc/tribe.json.j2 dest={{ tribe_conf }}
+  notify:
+    - restart tribe
+
+- template: src=etc/init/tribed.conf.j2 dest=/etc/init/tribed.conf
+  notify:
+    - restart tribe
