@@ -102,13 +102,18 @@ class TestUtil(unittest.TestCase):
 
         self.assertEqual('err\n', context.exception.message)
 
+    def test_get_alias_label(self):
+        result = util._get_alias_label('eth0', '1.1.1.1/24')
+
+        self.assertEquals('eth0:1', result)
+
     def test_add_alias(self):
         with patch('tribe.util.get_alias') as mocked_get_alias:
             mocked_get_alias.return_value = False
             with patch('tribe.util.execute') as mocked:
                 mocked.return_value = (0, Mock(), Mock())
-                util.add_alias('10.0.0.1/24', 'eth1', 'eth1:10')
-                cmd = 'sudo ip addr add 10.0.0.1/24 dev eth1 label eth1:10'
+                util.add_alias('10.0.0.1/24', 'eth1')
+                cmd = 'sudo ip addr add 10.0.0.1/24 dev eth1 label eth1:1'
 
                 mocked.assert_called_once_with(cmd)
 
@@ -124,8 +129,8 @@ class TestUtil(unittest.TestCase):
             mocked_get_alias.return_value = True
             with patch('tribe.util.execute') as mocked:
                 mocked.return_value = (0, Mock(), Mock())
-                util.delete_alias('10.0.0.1/24', 'eth1', 'eth1:10')
-                cmd = 'sudo ip addr del 10.0.0.1/24 dev eth1 label eth1:10'
+                util.delete_alias('10.0.0.1/24', 'eth1')
+                cmd = 'sudo ip addr del 10.0.0.1/24 dev eth1 label eth1:1'
 
                 mocked.assert_called_once_with(cmd)
 
