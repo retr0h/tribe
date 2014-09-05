@@ -121,7 +121,7 @@ class TestUtil(unittest.TestCase):
 
     def test_delete_alias(self):
         with patch('tribe.util.get_alias') as mocked_get_alias:
-            mocked_get_alias.return_value = False
+            mocked_get_alias.return_value = True
             with patch('tribe.util.execute') as mocked:
                 mocked.return_value = (0, Mock(), Mock())
                 util.delete_alias('10.0.0.1/24', 'eth1', 'eth1:10')
@@ -131,7 +131,7 @@ class TestUtil(unittest.TestCase):
 
     def test_does_not_delete_alias(self):
         with patch('tribe.util.get_alias') as mocked_get_alias:
-            mocked_get_alias.return_value = True
+            mocked_get_alias.return_value = False
             with patch('tribe.util.execute') as mocked:
 
                 assert not mocked.called

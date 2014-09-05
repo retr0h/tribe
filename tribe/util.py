@@ -116,7 +116,7 @@ def add_alias(ip, interface, label):
 
 
 def delete_alias(ip, interface, label):
-    if not get_alias(label):
+    if get_alias(label):
         cmd = ('sudo ip addr del {ip} '
                'dev {interface} '
                'label {label}').format(**locals())
