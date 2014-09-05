@@ -45,7 +45,7 @@ def _parse_args():
     return args
 
 
-if __name__ == '__main__':
+def main():
     args = _parse_args()
     c = config.Config()
 
@@ -53,3 +53,6 @@ if __name__ == '__main__':
         client.Client(c).ping()
     elif args['agent']:
         agent.Agent(c).run()
+
+if __name__ == '__main__':
+    main()
