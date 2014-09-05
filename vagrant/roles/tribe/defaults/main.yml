@@ -1,0 +1,14 @@
+---
+tribe_conf: /etc/tribe.json
+tribe_etcd_hosts:
+  - 192.168.20.13
+  - 192.168.20.14
+tribe_aliases:
+  - 192.168.20.201
+  - 192.168.20.202
+  - 192.168.20.203
+tribe_servers:
+  - tribe-1
+  - tribe-2
+  - tribe-3
+tribe_interface: eth1
