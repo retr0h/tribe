@@ -1,0 +1,2 @@
+---
+- template: src=etc/tribe.json.j2 dest={{ tribe_conf }}
