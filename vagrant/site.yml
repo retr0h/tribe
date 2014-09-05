@@ -12,5 +12,7 @@
     - {role: retr0h.etcd, etcd_cluster: True }
 
 - hosts: all
+  pre_tasks:
+    - apt: update_cache=yes cache_valid_time=3600
   roles:
     - tribe

@@ -1,0 +1,7 @@
+---
+- hosts: tribe-2
+  gather_facts: no 
+  tasks:
+    - service: name=tribe-agent state=started
+    - pause: seconds=10
+- include: initial.yml

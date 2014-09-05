@@ -1,0 +1,4 @@
+---
+- include: initial.yml
+- include: failover.yml
+- include: failback.yml

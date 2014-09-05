@@ -52,7 +52,7 @@ class Agent(object):
         servers = self._client.get_key(self._config.etcd_path, recursive=True)
         return [os.path.basename(server.key) for server in servers]
 
-    def cleanup(self):
+    def _cleanup(self):
         # TODO(retr0h): log
         print 'addresses to cleanup'
         other_addresses = util.get_other_addresses(self._get_servers(),
@@ -79,5 +79,5 @@ class Agent(object):
             # TODO(retr0h): log
             print 'agent -> starting'
             self._client.watch_key(self._config.etcd_path, recursive=True)
-            self.cleanup()
+            self._cleanup()
             self._setup()

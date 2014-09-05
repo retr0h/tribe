@@ -64,7 +64,7 @@ class TestClient(unittest.TestCase):
                                        'mocked-2.example.com',
                                        'mocked-3.example.com']
         mocked_addresses.return_value = ['2.2.2.2']
-        self._agent.cleanup()
+        self._agent._cleanup()
 
         mocked_cmd.assert_called_once_with('2.2.2.2',
                                            'eth0')

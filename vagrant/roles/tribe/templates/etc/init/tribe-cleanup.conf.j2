@@ -1,0 +1,11 @@
+description "tribe cleanup service"
+
+start on stopping tribe-agent
+
+respawn
+
+script
+{% for address in tribe_aliases -%}
+ip addr del {{ address }} dev {{ tribe_interface }} || :
+{% endfor -%}
+end script
