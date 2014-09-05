@@ -113,7 +113,7 @@ class TestUtil(unittest.TestCase):
             with patch('tribe.util.execute') as mocked:
                 mocked.return_value = (0, Mock(), Mock())
                 util.add_alias('10.0.0.1/24', 'eth1', 'eth1:10')
-                cmd = 'ip addr add 10.0.0.1/24 dev eth1 label eth1:10'
+                cmd = 'sudo ip addr add 10.0.0.1/24 dev eth1 label eth1:10'
 
                 mocked.assert_called_once_with(cmd)
 
@@ -130,7 +130,7 @@ class TestUtil(unittest.TestCase):
             with patch('tribe.util.execute') as mocked:
                 mocked.return_value = (0, Mock(), Mock())
                 util.delete_alias('10.0.0.1/24', 'eth1', 'eth1:10')
-                cmd = 'ip addr del 10.0.0.1/24 dev eth1 label eth1:10'
+                cmd = 'sudo ip addr del 10.0.0.1/24 dev eth1 label eth1:10'
 
                 mocked.assert_called_once_with(cmd)
 
@@ -143,12 +143,14 @@ class TestUtil(unittest.TestCase):
 
     def test_get_alias(self):
         with patch('netifaces.ifaddresses') as mocked:
-            mocked.return_value = True
-            result = util.get_alias('valid')
+            mocked.return_value = {}
+            result = util.get_alias('eth1:valid')
 
             self.assertEquals(True, result)
 
     def test_get_alias_with_invalid_dev(self):
-        result = util.get_alias('invalid')
+        with patch('netifaces.ifaddresses') as mocked:
+            mocked.side_effect = ValueError
+            result = util.get_alias('eth1:invalid')
 
-        self.assertEquals(False, result)
+            self.assertEquals(False, result)

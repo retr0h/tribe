@@ -92,8 +92,8 @@ def execute(command):
 
 
 def add_alias(ip, interface, label):
-    if not get_alias(interface):
-        cmd = ('ip addr add {ip} '
+    if not get_alias(label):
+        cmd = ('sudo ip addr add {ip} '
                'dev {interface} '
                'label {label}').format(**locals())
 
@@ -101,8 +101,8 @@ def add_alias(ip, interface, label):
 
 
 def delete_alias(ip, interface, label):
-    if not get_alias(interface):
-        cmd = ('ip addr del {ip} '
+    if not get_alias(label):
+        cmd = ('sudo ip addr del {ip} '
                'dev {interface} '
                'label {label}').format(**locals())
 
@@ -110,6 +110,13 @@ def delete_alias(ip, interface, label):
 
 
 def get_alias(interface):
+    """
+    Determine if the given interface exists.  Aliases added with a label appear
+    as a separate interface by `netifaces`.  Returns True if the interface
+    exists otherwise False.
+
+    :param interface: A string with the interface to find.
+    """
     try:
         netifaces.ifaddresses(interface)
         return True
