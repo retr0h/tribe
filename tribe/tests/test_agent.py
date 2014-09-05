@@ -36,11 +36,6 @@ class TestClient(unittest.TestCase):
         self._config = config.Config(config_file=f)
         self._agent = agent.Agent(self._config)
 
-    def test_interface_label(self):
-        result = self._agent._interface_label('eth0', '1.1.1.1')
-
-        self.assertEquals('eth0:1', result)
-
     def test_cleanup(self):
         with patch('tribe.util.get_other_addresses') as mocked:
             mocked.return_value = ['2.2.2.2']
@@ -48,8 +43,7 @@ class TestClient(unittest.TestCase):
                 self._agent._cleanup()
 
                 mocked_cmd.assert_called_once_with('2.2.2.2',
-                                                   'eth0',
-                                                   'eth0:2')
+                                                   'eth0')
 
     def test_setup(self):
         with patch('tribe.util.get_own_addresses') as mocked:
@@ -58,5 +52,4 @@ class TestClient(unittest.TestCase):
                 self._agent._setup()
 
                 mocked_cmd.assert_called_once_with('1.1.1.1',
-                                                   'eth0',
-                                                   'eth0:1')
+                                                   'eth0')

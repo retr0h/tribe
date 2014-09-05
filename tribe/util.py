@@ -22,6 +22,7 @@
 
 import itertools
 import os
+import re
 import socket
 import subprocess
 
@@ -106,18 +107,25 @@ def execute(command):
     return _handle_result(exitcode, err)
 
 
-def add_alias(ip, interface, label):
+def _get_alias_label(interface, address):
+    return '{0}:{1}'.format(interface,
+                            re.split(r'[./]', address)[-2])
+
+
+def add_alias(address, interface):
+    label = _get_alias_label(interface, address)
     if not get_alias(label):
-        cmd = ('sudo ip addr add {ip} '
+        cmd = ('sudo ip addr add {address} '
                'dev {interface} '
                'label {label}').format(**locals())
 
         execute(cmd)
 
 
-def delete_alias(ip, interface, label):
+def delete_alias(address, interface):
+    label = _get_alias_label(interface, address)
     if get_alias(label):
-        cmd = ('sudo ip addr del {ip} '
+        cmd = ('sudo ip addr del {address} '
                'dev {interface} '
                'label {label}').format(**locals())
 
