@@ -55,12 +55,6 @@ class TestConfig(unittest.TestCase):
 
         self.assertEquals(expected, result)
 
-    def test_servers_accessor(self):
-        result = self._config.servers
-        expected = ['tribe-1', 'tribe-2', 'tribe-3']
-
-        self.assertEquals(expected, result)
-
     def test_interface_accessor(self):
         result = self._config.interface
 

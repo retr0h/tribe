@@ -58,9 +58,5 @@ class Config(object):
         return self._config.get('aliases', [])
 
     @property
-    def servers(self):
-        return self._config.get('servers', [])
-
-    @property
     def interface(self):
         return self._config.get('interface', 'eth0')

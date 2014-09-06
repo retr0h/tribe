@@ -21,11 +21,14 @@
 # THE SOFTWARE.
 
 import os
+import time
 
 import unittest2 as unittest
 from mock import patch
+from nose.plugins.attrib import attr
 
 from tribe import agent
+from tribe import client
 from tribe import config
 
 
@@ -35,21 +38,46 @@ class TestClient(unittest.TestCase):
         f = os.path.join(basedir, 'support', 'test.json')
         self._config = config.Config(config_file=f)
         self._agent = agent.Agent(self._config)
+        self._client = client.Client(self._config)
 
-    def test_cleanup(self):
-        with patch('tribe.util.get_other_addresses') as mocked:
-            mocked.return_value = ['2.2.2.2']
-            with patch('tribe.util.delete_alias') as mocked_cmd:
-                self._agent._cleanup()
+    @attr('integration')
+    def test_get_servers(self):
+        keys = ['/tribe/nodes/mocked-1.example.com',
+                '/tribe/nodes/mocked-2.example.com',
+                '/tribe/nodes/mocked-3.example.com']
+        for key in keys:
+            self._client.add_key(key, 'value')
+        time.sleep(0.1)
 
-                mocked_cmd.assert_called_once_with('2.2.2.2',
-                                                   'eth0')
+        result = self._agent._get_servers()
+        self.assertEquals(3, len(result))
+        self.assertEquals('mocked-1.example.com', result[0])
 
-    def test_setup(self):
-        with patch('tribe.util.get_own_addresses') as mocked:
-            mocked.return_value = ['1.1.1.1']
-            with patch('tribe.util.add_alias') as mocked_cmd:
-                self._agent._setup()
+        for key in keys:
+            self._client.delete_key(key)
 
-                mocked_cmd.assert_called_once_with('1.1.1.1',
-                                                   'eth0')
+    @patch('tribe.agent.Agent._get_servers')
+    @patch('tribe.util.get_other_addresses')
+    @patch('tribe.util.delete_alias')
+    def test_cleanup(self, mocked_cmd, mocked_addresses, mocked_servers):
+        mocked_servers.return_value = ['mocked-1.example.com',
+                                       'mocked-2.example.com',
+                                       'mocked-3.example.com']
+        mocked_addresses.return_value = ['2.2.2.2']
+        self._agent._cleanup()
+
+        mocked_cmd.assert_called_once_with('2.2.2.2',
+                                           'eth0')
+
+    @patch('tribe.agent.Agent._get_servers')
+    @patch('tribe.util.get_own_addresses')
+    @patch('tribe.util.add_alias')
+    def test_setup(self, mocked_cmd, mocked_addresses, mocked_servers):
+        mocked_servers.return_value = ['mocked-1.example.com',
+                                       'mocked-2.example.com',
+                                       'mocked-3.example.com']
+        mocked_addresses.return_value = ['1.1.1.1']
+        self._agent._setup()
+
+        mocked_cmd.assert_called_once_with('1.1.1.1',
+                                           'eth0')
