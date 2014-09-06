@@ -20,6 +20,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
+import os
+
 from tribe import client
 from tribe import util
 
@@ -45,10 +47,14 @@ class Agent(object):
         self._client = client.Client(config)
         self._config = config
 
+    def _get_servers(self):
+        servers = self._client.get_key(self._config.etcd_path, recursive=True)
+        return [os.path.basename(server.key) for server in servers]
+
     def _cleanup(self):
         # TODO(retr0h): log
         print 'addresses to cleanup'
-        other_addresses = util.get_other_addresses(self._config.servers,
+        other_addresses = util.get_other_addresses(self._get_servers,
                                                    self._config.aliases)
         for address in other_addresses:
             print address
@@ -58,7 +64,7 @@ class Agent(object):
     def _setup(self):
         # TODO(retr0h): log
         print 'addresses to add'
-        own_addresses = util.get_own_addresses(self._config.servers,
+        own_addresses = util.get_own_addresses(self._get_servers,
                                                self._config.aliases)
         for address in own_addresses:
             print address
