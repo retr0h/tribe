@@ -54,7 +54,7 @@ class Agent(object):
     def _cleanup(self):
         # TODO(retr0h): log
         print 'addresses to cleanup'
-        other_addresses = util.get_other_addresses(self._get_servers,
+        other_addresses = util.get_other_addresses(self._get_servers(),
                                                    self._config.aliases)
         for address in other_addresses:
             print address
@@ -64,7 +64,7 @@ class Agent(object):
     def _setup(self):
         # TODO(retr0h): log
         print 'addresses to add'
-        own_addresses = util.get_own_addresses(self._get_servers,
+        own_addresses = util.get_own_addresses(self._get_servers(),
                                                self._config.aliases)
         for address in own_addresses:
             print address
