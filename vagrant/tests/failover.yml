@@ -1,0 +1,36 @@
+---
+- hosts: tribe-2
+  gather_facts: no 
+  tasks:
+    - service: name=tribe-agent state=stopped
+    - pause: seconds=10
+
+- hosts: tribe-1
+  gather_facts: no 
+  tasks:
+    - shell: ip addr show eth1 | grep 192.168.20.202 | wc -l
+      register: test_result
+    - name: ensure alias is up
+      assert:
+        that:
+          - 'test_result.stdout == "1"'
+
+- hosts: tribe-2
+  gather_facts: no 
+  tasks:
+    - shell: ip addr show eth1 | grep 192.168.20.20[123] | wc -l
+      register: test_result
+    - name: ensure alias are not up
+      assert:
+        that:
+          - 'test_result.stdout == "0"'
+
+- hosts: tribe-3
+  gather_facts: no 
+  tasks:
+    - shell: ip addr show eth1 | grep 192.168.20.20[13] | wc -l
+      register: test_result
+    - name: ensure aliases are up
+      assert:
+        that:
+          - 'test_result.stdout == "2"'

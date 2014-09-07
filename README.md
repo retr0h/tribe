@@ -31,6 +31,10 @@ Execute unit tests:
     $ vagrant provision
     $ tox
 
+Execute integraton tests:
+
+    $ PLAYBOOK=vagrant/tests/main.yml vagrant provision
+
 License and Author
 ==================
 

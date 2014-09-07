@@ -1,9 +1,11 @@
 # encoding: UTF-8
 
+PLAYBOOK = ENV['PLAYBOOK'] || 'vagrant/site.yml'
+
 Vagrant.configure('2') do |config|
   config.vm.box = 'hashicorp/precise64'
   config.vm.provision 'ansible' do |ansible|
-    ansible.playbook = 'vagrant/site.yml'
+    ansible.playbook = PLAYBOOK
     ansible.limit = 'all'
     ansible.sudo = true
     ansible.host_key_checking = false

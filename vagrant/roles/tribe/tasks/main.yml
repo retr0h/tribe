@@ -21,6 +21,10 @@
     dest=/etc/init/tribe-heartbeat.conf
 
 - template: >
+    src=etc/init/tribe-cleanup.conf.j2
+    dest=/etc/init/tribe-cleanup.conf
+
+- template: >
     src=etc/init/tribe-agent.conf.j2
     dest=/etc/init/tribe-agent.conf
   notify:
