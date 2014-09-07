@@ -34,8 +34,8 @@ class Agent(object):
     An agents workflow:
       1. Start the agent's loop.
       2. Begin watching `config.etcd_path` for changes.
-        - Currently keys are added to this directory by cron job executing
-          `tribe --ping`.
+        - Currently keys are added to this directory by a heartbeat upstart
+          service issuing `tribe --ping`.
         - Keys are added with a configurable TTL.
         - Allow etcd to expire keys which have not been updated before the
           TTL expires.  We assume this is a server failure and re-hash IPs.
