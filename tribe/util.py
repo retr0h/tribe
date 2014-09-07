@@ -115,7 +115,7 @@ def _get_alias_label(interface, address):
 def add_alias(address, interface):
     label = _get_alias_label(interface, address)
     if not get_alias(label):
-        cmd = ('sudo ip addr add {address} '
+        cmd = ('ip addr add {address} '
                'dev {interface} '
                'label {label}').format(**locals())
 
@@ -125,7 +125,7 @@ def add_alias(address, interface):
 def delete_alias(address, interface):
     label = _get_alias_label(interface, address)
     if get_alias(label):
-        cmd = ('sudo ip addr del {address} '
+        cmd = ('ip addr del {address} '
                'dev {interface} '
                'label {label}').format(**locals())
 
