@@ -1,7 +1,7 @@
 description "tribe heartbeat service"
 
-start on started tribe-agent
-stop on stopping tribe-agent
+start on started tribe-agent RESULT=ok
+stop on stopping tribe-agent RESULT=ok
 
 respawn
 

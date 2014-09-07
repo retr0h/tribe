@@ -8,3 +8,7 @@ respawn
 script
   {{ tribe_venv_dir }}/bin/tribe --agent
 end script
+
+post-stop script
+  {{ tribe_venv_dir }}/bin/tribe --cleanup
+end script
