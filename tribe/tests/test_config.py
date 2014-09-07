@@ -42,7 +42,7 @@ class TestConfig(unittest.TestCase):
     def test_etcd_path_accessor(self):
         result = self._config.etcd_path
 
-        self.assertEquals('/tribe/nodes', result)
+        self.assertEquals('/tribe/mocked-nodes', result)
 
     def test_ping_ttl_accessor(self):
         result = self._config.ping_ttl
