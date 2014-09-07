@@ -51,7 +51,7 @@ class TestConfig(unittest.TestCase):
 
     def test_aliases_accessor(self):
         result = self._config.aliases
-        expected = ['10.0.0.10/24', '11.0.0.10/24', '12.0.0.10/24']
+        expected = ['10.0.0.10/32', '11.0.0.10/32', '12.0.0.10/32']
 
         self.assertEquals(expected, result)
 
