@@ -21,6 +21,7 @@
 # THE SOFTWARE.
 
 import os
+import time
 
 from tribe import client
 from tribe import util
@@ -72,6 +73,8 @@ class Agent(object):
             util.add_alias(address, interface)
 
     def run(self):
+        self._client.ping()
+        time.sleep(0.5)
         while True:
             # TODO(retr0h): log
             print 'agent -> starting'
