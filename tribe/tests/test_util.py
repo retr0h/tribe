@@ -113,7 +113,7 @@ class TestUtil(unittest.TestCase):
         mocked_get_alias.return_value = False
         mocked_execute.return_value = (0, Mock(), Mock())
         util.add_alias('10.0.0.1/32', 'eth1')
-        cmd = 'sudo ip addr add 10.0.0.1/32 dev eth1 label eth1:1'
+        cmd = 'ip addr add 10.0.0.1/32 dev eth1 label eth1:1'
 
         mocked_execute.assert_called_once_with(cmd)
 
@@ -130,7 +130,7 @@ class TestUtil(unittest.TestCase):
         mocked_get_alias.return_value = True
         mocked_execute.return_value = (0, Mock(), Mock())
         util.delete_alias('10.0.0.1/32', 'eth1')
-        cmd = 'sudo ip addr del 10.0.0.1/32 dev eth1 label eth1:1'
+        cmd = 'ip addr del 10.0.0.1/32 dev eth1 label eth1:1'
 
         mocked_execute.assert_called_once_with(cmd)
 
