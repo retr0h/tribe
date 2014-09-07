@@ -42,9 +42,9 @@ class TestClient(unittest.TestCase):
 
     @attr('integration')
     def test_get_servers(self):
-        keys = ['/tribe/nodes/mocked-1.example.com',
-                '/tribe/nodes/mocked-2.example.com',
-                '/tribe/nodes/mocked-3.example.com']
+        keys = ['/tribe/mocked-nodes/mocked-1.example.com',
+                '/tribe/mocked-nodes/mocked-2.example.com',
+                '/tribe/mocked-nodes/mocked-3.example.com']
         for key in keys:
             self._client.add_key(key, 'value')
         time.sleep(0.1)
