@@ -36,12 +36,12 @@ class TestUtil(unittest.TestCase):
                            '2.2.2.2',
                            '3.3.3.3']
 
-    def test_get_hostname(self):
-        with patch('socket.getfqdn') as mocked:
-            mocked.return_value = 'mocked-fqdn'
-            result = util.get_hostname()
+    @patch('socket.getfqdn')
+    def test_get_hostname(self, mocked):
+        mocked.return_value = 'mocked-fqdn'
+        result = util.get_hostname()
 
-            self.assertEquals('mocked-fqdn', result)
+        self.assertEquals('mocked-fqdn', result)
 
     def test_hash_addresses(self):
         result = util.hash_addresses(self._servers, self._addresses)
@@ -52,42 +52,42 @@ class TestUtil(unittest.TestCase):
 
         self.assertEquals(expected, result)
 
-    def test_get_own_addresses(self):
-        with patch('socket.getfqdn') as mocked:
-            mocked.return_value = 'mocked-3.example.com'
-            result = util.get_own_addresses(self._servers, self._addresses)
-            expected = ['2.2.2.2', '3.3.3.3']
+    @patch('socket.getfqdn')
+    def test_get_own_addresses(self, mocked):
+        mocked.return_value = 'mocked-3.example.com'
+        result = util.get_own_addresses(self._servers, self._addresses)
+        expected = ['2.2.2.2', '3.3.3.3']
 
-            self.assertItemsEqual(expected, result)
+        self.assertItemsEqual(expected, result)
 
-    def test_get_own_addresses_returns_empty_list(self):
+    @patch('socket.getfqdn')
+    def test_get_own_addresses_returns_empty_list(self, mocked):
         servers = ['mocked-1.example.com']
         addresses = ['1.1.1.1']
-        with patch('socket.getfqdn') as mocked:
-            mocked.return_value = 'mocked-3.example.com'
-            result = util.get_own_addresses(servers, addresses)
+        mocked.return_value = 'mocked-3.example.com'
+        result = util.get_own_addresses(servers, addresses)
 
         self.assertEquals([], result)
 
-    def test_get_other_addresses(self):
+    @patch('socket.getfqdn')
+    def test_get_other_addresses(self, mocked):
         addresses = ['1.1.1.1', '2.1.1.1', '3.1.1.1', '4.1.1.1',
                      '5.1.1.1', '6.1.1.1', '7.1.1.1', '8.1.1.1']
-        with patch('socket.getfqdn') as mocked:
-            mocked.return_value = 'mocked-3.example.com'
-            result = util.get_other_addresses(self._servers, addresses)
-            expected = ['1.1.1.1', '3.1.1.1', '2.1.1.1',
-                        '4.1.1.1', '5.1.1.1', '7.1.1.1']
+        mocked.return_value = 'mocked-3.example.com'
+        result = util.get_other_addresses(self._servers, addresses)
+        expected = ['1.1.1.1', '3.1.1.1', '2.1.1.1',
+                    '4.1.1.1', '5.1.1.1', '7.1.1.1']
 
-            self.assertItemsEqual(expected, result)
+        self.assertItemsEqual(expected, result)
 
-    def test_get_other_addresses_returns_empty_list(self):
+    @patch('socket.getfqdn')
+    def test_get_other_addresses_returns_empty_list(self, mocked):
         servers = ['mocked-1.example.com']
         addresses = ['1.1.1.1']
-        with patch('socket.getfqdn') as mocked:
-            mocked.return_value = 'mocked-1.example.com'
-            result = util.get_other_addresses(servers, addresses)
+        mocked.return_value = 'mocked-1.example.com'
+        result = util.get_other_addresses(servers, addresses)
 
-            self.assertEquals([], result)
+        self.assertEquals([], result)
 
     def test_execute(self):
         cmd = 'test true'
@@ -107,50 +107,50 @@ class TestUtil(unittest.TestCase):
 
         self.assertEquals('eth1:203', result)
 
-    def test_add_alias(self):
-        with patch('tribe.util.get_alias') as mocked_get_alias:
-            mocked_get_alias.return_value = False
-            with patch('tribe.util.execute') as mocked:
-                mocked.return_value = (0, Mock(), Mock())
-                util.add_alias('10.0.0.1/32', 'eth1')
-                cmd = 'sudo ip addr add 10.0.0.1/32 dev eth1 label eth1:1'
+    @patch('tribe.util.get_alias')
+    @patch('tribe.util.execute')
+    def test_add_alias(self, mocked_execute, mocked_get_alias):
+        mocked_get_alias.return_value = False
+        mocked_execute.return_value = (0, Mock(), Mock())
+        util.add_alias('10.0.0.1/32', 'eth1')
+        cmd = 'sudo ip addr add 10.0.0.1/32 dev eth1 label eth1:1'
 
-                mocked.assert_called_once_with(cmd)
+        mocked_execute.assert_called_once_with(cmd)
 
-    def test_does_not_add_alias(self):
-        with patch('tribe.util.get_alias') as mocked_get_alias:
-            mocked_get_alias.return_value = True
-            with patch('tribe.util.execute') as mocked:
+    @patch('tribe.util.get_alias')
+    @patch('tribe.util.execute')
+    def test_does_not_add_alias(self, mocked_execute, mocked_get_alias):
+        mocked_get_alias.return_value = True
 
-                assert not mocked.called
+        assert not mocked_execute.called
 
-    def test_delete_alias(self):
-        with patch('tribe.util.get_alias') as mocked_get_alias:
-            mocked_get_alias.return_value = True
-            with patch('tribe.util.execute') as mocked:
-                mocked.return_value = (0, Mock(), Mock())
-                util.delete_alias('10.0.0.1/32', 'eth1')
-                cmd = 'sudo ip addr del 10.0.0.1/32 dev eth1 label eth1:1'
+    @patch('tribe.util.get_alias')
+    @patch('tribe.util.execute')
+    def test_delete_alias(self, mocked_execute, mocked_get_alias):
+        mocked_get_alias.return_value = True
+        mocked_execute.return_value = (0, Mock(), Mock())
+        util.delete_alias('10.0.0.1/32', 'eth1')
+        cmd = 'sudo ip addr del 10.0.0.1/32 dev eth1 label eth1:1'
 
-                mocked.assert_called_once_with(cmd)
+        mocked_execute.assert_called_once_with(cmd)
 
-    def test_does_not_delete_alias(self):
-        with patch('tribe.util.get_alias') as mocked_get_alias:
-            mocked_get_alias.return_value = False
-            with patch('tribe.util.execute') as mocked:
+    @patch('tribe.util.get_alias')
+    @patch('tribe.util.execute')
+    def test_does_not_delete_alias(self, mocked_execute, mocked_get_alias):
+        mocked_get_alias.return_value = False
 
-                assert not mocked.called
+        assert not mocked_execute.called
 
-    def test_get_alias(self):
-        with patch('netifaces.ifaddresses') as mocked:
-            mocked.return_value = {}
-            result = util.get_alias('eth1:valid')
+    @patch('netifaces.ifaddresses')
+    def test_get_alias(self, mocked):
+        mocked.return_value = {}
+        result = util.get_alias('eth1:valid')
 
-            self.assertEquals(True, result)
+        self.assertEquals(True, result)
 
-    def test_get_alias_with_invalid_dev(self):
-        with patch('netifaces.ifaddresses') as mocked:
-            mocked.side_effect = ValueError
-            result = util.get_alias('eth1:invalid')
+    @patch('netifaces.ifaddresses')
+    def test_get_alias_with_invalid_dev(self, mocked):
+        mocked.side_effect = ValueError
+        result = util.get_alias('eth1:invalid')
 
-            self.assertEquals(False, result)
+        self.assertEquals(False, result)

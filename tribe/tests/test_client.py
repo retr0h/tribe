@@ -47,13 +47,13 @@ class TestClient(unittest.TestCase):
         self._key = '/{0}'.format(self._random_key())
         self._sleep_time = 0.1
 
-    def test_get_key(self):
-        with patch('etcd.client.Client.read') as mocked:
-            self._client.get_key('mocked-key')
+    @patch('etcd.client.Client.read')
+    def test_get_key(self, mocked):
+        self._client.get_key('mocked-key')
 
-            mocked.assert_called_once_with('mocked-key',
-                                           recursive=False,
-                                           wait=False)
+        mocked.assert_called_once_with('mocked-key',
+                                       recursive=False,
+                                       wait=False)
 
     @attr('integration')
     def test_get_key_returns(self):
@@ -92,13 +92,13 @@ class TestClient(unittest.TestCase):
         result = self._client.get_key(self._key, recursive=True)
         self.assertEquals(0, len(result))
 
-    def test_add_key(self):
-        with patch('etcd.client.Client.set') as mocked:
-            self._client.add_key('mocked-key', 'mocked-value')
+    @patch('etcd.client.Client.set')
+    def test_add_key(self, mocked):
+        self._client.add_key('mocked-key', 'mocked-value')
 
-            mocked.assert_called_once_with('mocked-key',
-                                           'mocked-value',
-                                           ttl=None)
+        mocked.assert_called_once_with('mocked-key',
+                                       'mocked-value',
+                                       ttl=None)
 
     @attr('integration')
     def test_add_key_returns(self):
@@ -109,13 +109,13 @@ class TestClient(unittest.TestCase):
 
         self._client.delete_key(self._key)
 
-    def test_watch_key(self):
-        with patch('tribe.client.Client.get_key') as mocked:
-            self._client.watch_key('mocked-key')
+    @patch('tribe.client.Client.get_key')
+    def test_watch_key(self, mocked):
+        self._client.watch_key('mocked-key')
 
-            mocked.assert_called_once_with('mocked-key',
-                                           recursive=False,
-                                           wait=True)
+        mocked.assert_called_once_with('mocked-key',
+                                       recursive=False,
+                                       wait=True)
 
     @attr('integration')
     def test_watch_key_returns(self):
