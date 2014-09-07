@@ -41,18 +41,25 @@ def _parse_args():
                     help='Ping the `etcd_path`.')
     ap.add_argument('--agent', action='store_true',
                     help='Start the agent.')
+    ap.add_argument('--cleanup', action='store_true',
+                    help='Cleanup aliases on the host.')
     args = vars(ap.parse_args())
     return args
 
 
 def main():
     args = _parse_args()
-    c = config.Config()
+    conf = config.Config()
+    c = client.Client(conf)
+    a = agent.Agent(conf)
 
     if args['ping']:
-        client.Client(c).ping()
+        c.ping()
     elif args['agent']:
-        agent.Agent(c).run()
+        a.run()
+    # TODO(retr0h): Not sure I like this under agent anylonger.
+    elif args['cleanup']:
+        a.cleanup()
 
 if __name__ == '__main__':
     main()
