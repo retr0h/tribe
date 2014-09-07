@@ -4,6 +4,7 @@ tribe_venv_dir: /root/.virtualenvs/tribe
 tribe_venv_site_packages: no
 tribe_repo: https://github.com/retr0h/tribe
 tribe_version: ~ # TODO
+tribe_heartbeat_sleep: 6
 
 tribe_etcd_hosts:
   - 192.168.20.13

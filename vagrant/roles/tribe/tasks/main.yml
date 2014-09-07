@@ -14,8 +14,15 @@
 
 - template: src=etc/tribe.json.j2 dest={{ tribe_conf }}
   notify:
-    - restart tribe
+    - restart tribe agent
 
-- template: src=etc/init/tribed.conf.j2 dest=/etc/init/tribed.conf
+- template: >
+    src=etc/init/tribe-heartbeat.conf.j2
+    dest=/etc/init/tribe-heartbeat.conf
+
+- template: >
+    src=etc/init/tribe-agent.conf.j2
+    dest=/etc/init/tribe-agent.conf
   notify:
-    - restart tribe
+    - restart tribe agent
+
