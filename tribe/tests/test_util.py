@@ -90,17 +90,22 @@ class TestUtil(unittest.TestCase):
         self.assertEquals([], result)
 
     def test_execute(self):
-        cmd = 'test true'
+        cmd = ['test', 'true']
         result = util.execute(cmd)
 
         self.assertEquals(True, result)
 
     def test_execute_raises(self):
-        cmd = 'echo err >&2 && exit 1'
+        cmd = ['ls', '/invalid']
         with self.assertRaises(Exception) as context:
             util.execute(cmd)
 
-        self.assertEqual('err\n', context.exception.message)
+        # OSX:
+        # ls: /invalid: No such file or directory\n
+        # Travis:
+        # ls: cannot access /invalid: No such file or directory\n
+        self.assertRegexpMatches(context.exception.message,
+                                 r'.* No such file or directory\n')
 
     def test_get_alias_label(self):
         result = util._get_alias_label('eth1', '192.168.20.203/32')
@@ -113,7 +118,9 @@ class TestUtil(unittest.TestCase):
         mocked_get_alias.return_value = False
         mocked_execute.return_value = (0, Mock(), Mock())
         util.add_alias('10.0.0.1/32', 'eth1')
-        cmd = 'ip addr add 10.0.0.1/32 dev eth1 label eth1:1'
+        cmd = ['/bin/ip', 'addr', 'add', '10.0.0.1/32',
+               'dev', 'eth1',
+               'label', 'eth1:1']
 
         mocked_execute.assert_called_once_with(cmd)
 
@@ -130,7 +137,8 @@ class TestUtil(unittest.TestCase):
         mocked_get_alias.return_value = True
         mocked_execute.return_value = (0, Mock(), Mock())
         util.delete_alias('10.0.0.1/32', 'eth1')
-        cmd = 'ip addr del 10.0.0.1/32 dev eth1 label eth1:1'
+        cmd = ['/bin/ip', 'addr', 'del', '10.0.0.1/32',
+               'dev', 'eth1']
 
         mocked_execute.assert_called_once_with(cmd)
 
