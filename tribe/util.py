@@ -88,19 +88,18 @@ def _handle_result(exitcode, err):
         raise Exception(err)
 
 
-def execute(command):
+def execute(args):
     """
     Executes a command in a subprocess.  Returns the result of
     `_handle_result()`.
 
-    :param command: Command string to execute.
+    :param command: Command list to execute.
     """
-    process = subprocess.Popen(command,
+    process = subprocess.Popen(args,
                                cwd=os.getcwd(),
                                stdin=subprocess.PIPE,
                                stdout=subprocess.PIPE,
-                               stderr=subprocess.PIPE,
-                               shell=True)
+                               stderr=subprocess.PIPE)
     (out, err) = process.communicate()
     exitcode = process.wait()
 
@@ -115,9 +114,9 @@ def _get_alias_label(interface, address):
 def add_alias(address, interface):
     label = _get_alias_label(interface, address)
     if not get_alias(label):
-        cmd = ('ip addr add {address} '
-               'dev {interface} '
-               'label {label}').format(**locals())
+        cmd = ['/bin/ip', 'addr', 'add', address,
+               'dev', interface,
+               'label', label]
 
         execute(cmd)
 
@@ -125,9 +124,8 @@ def add_alias(address, interface):
 def delete_alias(address, interface):
     label = _get_alias_label(interface, address)
     if get_alias(label):
-        cmd = ('ip addr del {address} '
-               'dev {interface} '
-               'label {label}').format(**locals())
+        cmd = ['/bin/ip', 'addr', 'del', address,
+               'dev', interface]
 
         execute(cmd)
 
