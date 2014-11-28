@@ -3,3 +3,4 @@ mock
 unittest2
 flake8
 pep8
+sphinx
