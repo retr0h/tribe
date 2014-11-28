@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/retr0h/tribe.png?branch=master)](https://travis-ci.org/retr0h/tribe)
+[![Build Status](http://img.shields.io/travis/retr0h/tribe.svg?style=flat-square)](https://travis-ci.org/retr0h/tribe)
 
 tribe
 =====
@@ -7,33 +7,10 @@ A tool for maintaining a consistent list of IP addresses across a set of availab
 
 A modern take on [Wackamole](http://www.backhand.org/wackamole).
 
-Usage
-=====
+Docs
+====
 
-    $ tribe -h
-
-Manually executing the CLI:
-
-    $ PYTHONPATH=$PYTHONPATH:. python tribe/shell.py
-
-Testing
-=======
-
-Requirements:
-
-* Ansible >= 1.6
-* Vagrant >= 1.6
-* Tox
-
-Execute unit tests:
-
-    $ vagrant up --no-provision
-    $ vagrant provision
-    $ tox
-
-Execute integraton tests:
-
-    $ PLAYBOOK=vagrant/tests/main.yml vagrant provision
+For HTML documentation, visit [https://tribe.readthedocs.org/](https://tribe.readthedocs.org/).
 
 License and Author
 ==================
