@@ -2,3 +2,4 @@ pbr
 python-etcd
 hash_ring
 netifaces
+tornado
