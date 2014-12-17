@@ -21,7 +21,8 @@
 # THE SOFTWARE.
 
 import os
-import time
+
+import tornado.ioloop
 
 from tribe import client
 from tribe import util
@@ -72,12 +73,14 @@ class Agent(object):
             interface = self._config.interface
             util.add_alias(address, interface)
 
+    def _main(self):
+        print 'agent -> starting'
+        self._client.watch_key(self._config.etcd_path, recursive=True)
+        self._cleanup()
+        self._setup()
+
     def run(self):
-        self._client.ping()
-        time.sleep(0.5)
-        while True:
-            # TODO(retr0h): log
-            print 'agent -> starting'
-            self._client.watch_key(self._config.etcd_path, recursive=True)
-            self._cleanup()
-            self._setup()
+        callback_time = 1 * 500  # ms
+        scheduler = tornado.ioloop.PeriodicCallback(self._main, callback_time)
+        scheduler.start()
+        tornado.ioloop.IOLoop.instance().start()
